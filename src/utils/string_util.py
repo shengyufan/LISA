@@ -58,6 +58,6 @@ def remove_first_pound(s):
 if __name__ == '__main__':
     # pattern = get_punctuation_pattern()
     s = '#Se'
-    # print check_regex(pattern, s)
-    # print string.punctuation
-    print is_punctuation(s)
+    # print(check_regex(pattern, s))
+    # print(string.punctuation)
+    print(is_punctuation(s))

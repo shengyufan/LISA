@@ -74,7 +74,7 @@ def bulk_loading(raw_data, temp_dir, model_dir_init):
         sigma = Config().sigma
         FileViewer.detect_and_create_dir(piecewise_params_dir)
 
-        print 'n_models =', n_models
+        print('n_models =', n_models)
         start = 0
         # for i in range(n_models - 1, 0, -1):
         for i in range(n_models):
@@ -88,7 +88,7 @@ def bulk_loading(raw_data, temp_dir, model_dir_init):
                 pm.train()
                 FileViewer.detect_and_create_dir(model_dir)
                 pm.save(model_dir)
-            print i, 'finished'
+            print(i, 'finished')
 
 
 
@@ -163,8 +163,8 @@ def lattice_regression_train(my_idx, tau, lattice_data_dir, lattice_model_dir):
 if __name__ == '__main__':
 
     Config()
-    print 'home_dir =', Config().home_dir
-    print 'data_dir =', Config().data_dir
+    print('home_dir =', Config().home_dir)
+    print('data_dir =', Config().data_dir)
     temp_dir = Config().data_dir
     raw_data = np.load(os.path.join(temp_dir, 'data_0.npy'))
     model_dir_init = os.path.join(Config().models_dir, 'LISA_Init')
@@ -183,7 +183,7 @@ if __name__ == '__main__':
     # flag = my_idx.check_and_load_params()
     # assert (flag == True)
     # total_n_pages, n_entries = my_idx.range_query(query_ranges)
-    # print '#Pages =', total_n_pages
+    # print('#Pages =', total_n_pages)
 
     # Fig 8 & Fig 12: --------------range query on AI-----------------------
     # my_idx.set_model_dir(model_dir_init)
@@ -194,7 +194,7 @@ if __name__ == '__main__':
     # my_idx.set_model_dir(model_dir_AI)
     # my_idx.save()
     # total_n_pages, n_entries = my_idx.range_query(query_ranges)
-    # print '#Pages =', total_n_pages
+    # print('#Pages =', total_n_pages)
 
     # Fig 9: ---------------range query on AD-----------------------
     # my_idx.set_model_dir(model_dir_AI)
@@ -205,7 +205,7 @@ if __name__ == '__main__':
     # my_idx.set_model_dir(model_dir_AD)
     # my_idx.save()
     # total_n_pages, n_entries = my_idx.range_query(query_ranges)
-    # print '#Pages =', total_n_pages
+    # print('#Pages =', total_n_pages)
 
     # Fig 13: --------------KNN query--------------------
     my_idx = LISA()
@@ -226,7 +226,7 @@ if __name__ == '__main__':
     K = 10
     all_queried_keys, total_n_pages, radiuses, init_radiuses, node_indices_list, n_pages_every_query = my_idx.knn_query(
         query_centers, K)
-    print '#Pages =', total_n_pages
+    print('#Pages =', total_n_pages)
 
 
 

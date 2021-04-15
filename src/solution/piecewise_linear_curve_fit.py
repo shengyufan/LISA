@@ -14,15 +14,15 @@ def check_order(mappings):
     count = 0
     for i in range(mappings.shape[0] - 1):
         if mappings[i] >= mappings[i + 1]:
-            print i, mappings[i], mappings[i + 1]
+            print(i, mappings[i], mappings[i + 1])
             count += 1
-    print '**********count =', count
+    print('**********count =', count)
 
 class PiecewiseModel:
     def __init__(self, id, sorted_mappings, sigma=100):
         self.id = id
         self.min_value = sorted_mappings.min()
-        # print 'min_Value =', self.min_value
+        # print('min_Value =', self.min_value)
         self.sorted_mappings = sorted_mappings - self.min_value
         # self.sorted_mappings = sorted_mappings
         self.positions = np.arange(0, self.sorted_mappings.shape[0], dtype=np.int64)
@@ -45,16 +45,16 @@ class PiecewiseModel:
             positions = self.positions
         A = self.relu(np.tile(mappings, [1, self.sigma]) - betas.transpose())
         symm = np.matmul(A.transpose(), A)
-        # print 'symm.shape =', symm.shape
+        # print('symm.shape =', symm.shape)
         if (np.linalg.cond(symm) < 1 / sys.float_info.epsilon):
             left_part = np.linalg.inv(symm)
             right_part = A.transpose().dot(positions)
             alphas = left_part.dot(right_part)
             # alphas = np.linalg.lstsq(A, positions)[0]
-            # print alphas
+            # print(alphas)
             return alphas, A
         else:
-            # print '---------------'
+            # print('---------------')
             return None, None
 
         # alphas = np.linalg.lstsq(A, positions, rcond=None)[0]
@@ -88,7 +88,7 @@ class PiecewiseModel:
         # r = A.dot(alphas).clip(min=0, max=self.sorted_mappings.shape[0]) - self.positions
         r = A.dot(alphas).clip(min=0, max=self.sorted_mappings.shape[0]) - self.positions
 
-        # print '-----r.max =', np.abs(r).max()
+        # print('-----r.max =', np.abs(r).max())
         return np.sum(r*r)
 
 
@@ -158,15 +158,15 @@ class PiecewiseModel:
         alphas[-1] = (self.sorted_mappings.shape[0] - 1) / (max_mapping - betas[-1])
         alphas_cumsum = np.cumsum(alphas)
         if alphas_cumsum[-1] < 0:
-            print '**************'
+            print('**************')
             alphas[-1] = -alphas_cumsum[-2]
 
-        # print 'alphas =', alphas.tolist()
+        # print('alphas =', alphas.tolist())
         all_pred_idxes = self.predict_idxes(self.sorted_mappings, betas, alphas).clip(min=0, max=self.sorted_mappings.shape[0])
         act_idxes = np.arange(0, self.sorted_mappings.shape[0], dtype=np_data_type())
         diff = (all_pred_idxes - act_idxes)
-        # print 'all_loss =', np.sum(diff * diff)
-        print all_pred_idxes[0:100].tolist()
+        # print('all_loss =', np.sum(diff * diff))
+        print(all_pred_idxes[0:100].tolist())
 
         return alphas
 
@@ -195,7 +195,7 @@ class PiecewiseModel:
         alphas[-1] = (self.sorted_mappings.shape[0] - 1) / (max_mapping - betas[-1])
         alphas_cumsum = np.cumsum(alphas)
         if alphas_cumsum[-1] < 0:
-            print '**************'
+            print('**************')
             alphas[-1] = -alphas_cumsum[-2]
 
         return alphas
@@ -271,11 +271,11 @@ class PiecewiseModel:
             if np.linalg.cond(Y) < 1 / sys.float_info.epsilon:
                 s = -np.linalg.inv(Y).dot(g)
             else:
-                # print '------'
+                # print('------')
                 second_grad_flag = False
                 s = -g
 
-            # print 's.shape =', s.shape
+            # print('s.shape =', s.shape)
             lr, loss, tmp_betas, tmp_alphas = self.lr_search(s, betas, init_loss)
 
             if lr > 0:
@@ -289,7 +289,7 @@ class PiecewiseModel:
                 if second_grad_flag == False:
                     # self.A = A
                     # self.alphas = alphas
-                    # print 'loss =', init_loss
+                    # print('loss =', init_loss)
                     break
                 else:
                     s = -g
@@ -303,16 +303,16 @@ class PiecewiseModel:
                         # self.betas = np.sort(betas)
                         # self.alphas, _ = self.cal_alphas(self.betas)
                     else:
-                        # print 'loss =', init_loss
+                        # print('loss =', init_loss)
 
                         # all_pred_idxes = self.predict_idxes(self.sorted_mappings)
                         # diff = np.abs(all_pred_idxes - self.positions)
-                        # print 'avg_diff =', np.average(diff)
+                        # print('avg_diff =', np.average(diff))
                         break
 
             # if k % 100 == 0:
-            #     print '---------------col_id =', self.id, ', k =', k, '----------------'
-            #     print 'xloss =', loss
+            #     print('---------------col_id =', self.id, ', k =', k, '----------------')
+            #     print('xloss =', loss)
 
             k += 1
             if k >= 200:
@@ -336,7 +336,7 @@ class PiecewiseModel:
         # flag = (betas_diff.min() > 0)
         #
         # if flag == False:
-        #     print '************************'
+        #     print('************************')
         #     return flag
         # alphas_cumsum = np.cumsum(alphas)
         # min_slope = alphas_cumsum.min()
@@ -353,7 +353,7 @@ class PiecewiseModel:
             return flag
         alphas_cumsum = np.cumsum(alphas)
         min_slope = alphas_cumsum.min()
-        # print 'min_slope =', min_slope
+        # print('min_slope =', min_slope)
 
         return (min_slope >= 0)
 
@@ -397,8 +397,8 @@ class myThread(threading.Thread):
                 pm.train()
                 FileViewer.detect_and_create_dir(model_dir)
                 pm.save(model_dir)
-                print 'thread_id =', self.thread_id, ', model', col_id, 'has been trained'
+                print('thread_id =', self.thread_id, ', model', col_id, 'has been trained')
             except:
                 FileViewer.detect_and_delete_dir(model_dir)
-                print 'thread_id =', self.thread_id, ', model', col_id, 'encountered exception'
+                print('thread_id =', self.thread_id, ', model', col_id, 'encountered exception')
 

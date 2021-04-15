@@ -25,7 +25,7 @@ class LatticeRegression:
         self.training_X = np.load(lattice_training_points_path).transpose()
         self.training_Y = np.load(lattice_training_radiuses_path).transpose()
 
-        print 'self.A.shape =', self.A.shape
+        print( 'self.A.shape =', self.A.shape)
         self.training_X = self.training_X[0:self.A.shape[1] * 40]
         self.training_Y = self.training_Y[0:self.A.shape[1] * 40]
         self.get_metadata()
@@ -34,9 +34,9 @@ class LatticeRegression:
         self.data_dim = self.A.shape[0]
         self.m = self.A.shape[1]
         self.n_nodes_each_dim = int(math.pow(self.A.shape[1] * 1., 1. / self.data_dim) + 0.5)
-        print 'self.n_nodes_each_dim =', self.n_nodes_each_dim
+        print( 'self.n_nodes_each_dim =', self.n_nodes_each_dim)
         self.node_coordinates = self.A[-1, 0:self.n_nodes_each_dim]
-        print self.node_coordinates
+        print( self.node_coordinates)
 
     def get_L(self):
         L_indices_list = [[], []]
@@ -71,13 +71,13 @@ class LatticeRegression:
         dists_list = []
         for i in range(len(node_indices_list)):
             indices = node_indices_list[i]
-            # print '----indices.shape =', indices.shape, 'X.shape =', self.X.shape, 'A.shape =', self.A.shape
+            # print( '----indices.shape =', indices.shape, 'X.shape =', self.X.shape, 'A.shape =', self.A.shape
             offsets = self.A[:, indices] - X
             dists = np.linalg.norm(offsets, axis=0)
             dists_list.append(dists)
 
         dists_inverse_array = 1. / (np.array(dists_list, dtype=np_data_type()).transpose() + 1e-8)
-        print '------dists_array.shape =', dists_inverse_array.shape
+        print( '------dists_array.shape =', dists_inverse_array.shape)
         sum_along_rows = np.sum(dists_inverse_array, axis=1)
         weights = dists_inverse_array / np.reshape(sum_along_rows, [sum_along_rows.shape[0], 1])
         weights_list = []
@@ -131,10 +131,10 @@ class LatticeRegression:
         # self.alpha = 0.01
         self.alpha = 1.
         left = self.training_W.dot(self.training_Y.transpose()) / self.m
-        print '--------------', type(left), 'left.shape =', left.shape
+        print( '--------------', type(left), 'left.shape =', left.shape)
         tmp = self.training_W.dot(self.training_W.transpose()) / self.m + self.alpha * self.L
         tmp = tmp.transpose()
-        print '--------------', type(tmp), 'tmp.shape =', tmp.shape
+        print( '--------------', type(tmp), 'tmp.shape =', tmp.shape)
 
         self.B = (spsolve(A=tmp, b=left)).transpose()
         # Bs = []
@@ -143,7 +143,7 @@ class LatticeRegression:
         #     Bs.append(B)
         # self.B = np.array(Bs).transpose()
         # self.B = B.transpose()
-        print '--------------', type(self.B), 'B.shape =', self.B.shape
+        print( '--------------', type(self.B), 'B.shape =', self.B.shape)
 
     def train(self, lattice_dir):
         self.load_training_data(lattice_dir)
@@ -153,24 +153,24 @@ class LatticeRegression:
         self.training_W, _ = self.getW(self.training_X)
         self.cal_B()
         end = time.time()
-        print 'time =', end - start
+        print( 'time =', end - start)
 
     def fit(self, X):
         W, node_indices_list = self.getW(X.transpose())
         W = W.transpose() # sparse n x m matrix
-        # print '--------W.shape =', W.shape, 'B.shape =', self.B.shape
-        print '--------type(W) =', type(W)
+        # print( '--------W.shape =', W.shape, 'B.shape =', self.B.shape)
+        print( '--------type(W) =', type(W))
         return W.dot(self.B.transpose()), node_indices_list
 
 
     # def cal_B(self):
     #     self.alpha = 0.01
     #     left = self.training_W.dot(self.training_Y.transpose()).transpose() / self.m
-    #     print '--------------', type(left), 'left.shape =', left.shape
+    #     print( '--------------', type(left), 'left.shape =', left.shape)
     #     tmp = self.training_W.dot(self.training_W.transpose()) / self.m + self.alpha * self.L
-    #     print '--------------', type(tmp), 'tmp.shape =', tmp.shape
+    #     print( '--------------', type(tmp), 'tmp.shape =', tmp.shape)
     #     right = inv(tmp)
-    #     print '--------------', type(right), 'right.shape =', right.shape
+    #     print( '--------------', type(right), 'right.shape =', right.shape)
     #
     #     # c = np.linalg.inv(np.linalg.cholesky(tmp))
     #     # right = np.dot(c.T, c)
@@ -178,7 +178,7 @@ class LatticeRegression:
     #
     #     # left = self.training_Y.dot(self.training_W.transpose()) / self.m
     #     self.B = (right.dot(left.transpose())).transpose()
-    #     print '--------------', type(self.B), 'B.shape =', self.B.shape
+    #     print( '--------------', type(self.B), 'B.shape =', self.B.shape)
 
 
 
@@ -210,11 +210,11 @@ class LatticeRegression:
 
         self.A = np.load(A_path)
         self.B = np.load(B_path)
-        # print 'B.shape =', self.B.shape
-        # print 'B.type =', self.B.dtype
-        # print self.B[0, 0:10]
-        # print self.A[0, 0:10]
-        # print self.A[2, 0:10]
+        # print( 'B.shape =', self.B.shape)
+        # print( 'B.type =', self.B.dtype)
+        # print( self.B[0, 0:10])
+        # print( self.A[0, 0:10])
+        # print( self.A[2, 0:10])
 
         self.training_X = np.load(training_X_path)
         self.training_Y = np.load(training_Y_path)
@@ -231,11 +231,11 @@ class LatticeRegression:
         training_W_path = os.path.join(model_dir, 'training_W.npz')
         L_path = os.path.join(model_dir, 'L.npz')
         self.A = np.load(A_path)
-        print 'A.shape =', self.A.shape
+        print( 'A.shape =', self.A.shape)
         self.B = np.load(B_path)
-        print 'B.shape =', self.B.shape
+        print( 'B.shape =', self.B.shape)
         self.L = load_npz(L_path)
-        print 'L.shape =', self.L.shape
+        print( 'L.shape =', self.L.shape)
         self.get_metadata()
 
 

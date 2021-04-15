@@ -56,7 +56,7 @@ class Config(object):
             self.tau = 50 # number of nodes in each dim
 
 
-            print '---------Config is initilized----------'
+            print('---------Config is initilized----------')
 
     instance = None
 

@@ -103,7 +103,7 @@ def generate_grid_cells(data, n_parts_each_dim, n_models, min_value_each_dim, ma
     partition(data, 0, 0, size, n_parts_each_dim, split_upper_bounds_list, split_idxes_list, max_value_each_dim)
 
     borders, all_cell_measures = create_borders(split_upper_bounds_list)
-    print 'borders.shape =', borders.shape
+    print('borders.shape =', borders.shape)
 
     unsorted_one_dim_data = data[:, -1]
     sorted_idxes = np.argsort(unsorted_one_dim_data)
@@ -121,16 +121,16 @@ def generate_grid_cells(data, n_parts_each_dim, n_models, min_value_each_dim, ma
     start = 0
     max_measure = 0
     for split_idxes in second_last_split_idxes_list:
-        # print 'split_idxes.shape =', split_idxes.shape
+        # print('split_idxes.shape =', split_idxes.shape)
         for i in range(split_idxes.shape[0]):
             end = split_idxes[i]
-            # print 'start =', start, 'end =', end
+            # print('start =', start, 'end =', end)
             if end > start:
                 part_borders = borders[cell_id]
                 part_cell_measures = all_cell_measures[cell_id]
                 part_data = data[start:end]
                 part_measures = np.prod(part_data[:, 0:-1] - part_borders, axis=1) / part_cell_measures
-                # print 'haha', part_data.shape, part_measures.shape
+                # print('haha', part_data.shape, part_measures.shape)
                 tmp = part_measures.max()
                 if tmp > max_measure:
                     max_measure = tmp
@@ -184,7 +184,7 @@ def check_order(mappings):
     count = 0
     for i in range(mappings.shape[0] - 1):
         if mappings[i] > mappings[i + 1]:
-            print i, mappings[i], mappings[i + 1]
+            print(i, mappings[i], mappings[i + 1])
             count += 1
-    print '**********count =', count
+    print('**********count =', count)
 

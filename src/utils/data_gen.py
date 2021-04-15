@@ -11,21 +11,21 @@ import cv2
 
 
 def remove_repeated(data):
-    print data.dtype
+    print(data.dtype)
     data_list = data.tolist()
-    print data_list[0:5]
-    print len(data_list)
+    print(data_list[0:5])
+    print(len(data_list))
 
     data_str_list = [','.join([str(j) for j in i]) for i in data_list]
-    print len(data_str_list)
-    print data_str_list[0:5]
+    print(len(data_str_list))
+    print(data_str_list[0:5])
     data_str_set = set(data_str_list)
-    print len(data_str_set)
+    print(len(data_str_set))
     data_list = [[float(j) for j in i.split(',')] for i in data_str_set]
-    print data_list[0:5]
-    print len(data_list)
+    print(data_list[0:5])
+    print(len(data_list))
     data = np.array(data_list)
-    print data.dtype
+    print(data.dtype)
     return data
 
 
@@ -54,7 +54,7 @@ def synthetic_data_gen(low, high, n, data_dim=2, max_value=10000, dist_type='uni
             iter += 1
             # if iter > 2:
             #     break
-            print 'iter =', iter, 'size =', len(all_data_set)
+            print('iter =', iter, 'size =', len(all_data_set))
             if len(all_data_set) > n:
                 break
 
@@ -75,7 +75,7 @@ def synthetic_data_gen(low, high, n, data_dim=2, max_value=10000, dist_type='uni
         return data.astype(np_data_type())
 
 def flatten(data, min_value=0.01, max_value=10000):
-    print data.dtype
+    print(data.dtype)
     data_dim = data.shape[1]
     min_values = data.min(axis=0)
     max_values = data.max(axis=0)
@@ -84,8 +84,8 @@ def flatten(data, min_value=0.01, max_value=10000):
     range_max_values = np.array([max_value] * data_dim, dtype=np_data_type())
     ranges = range_max_values - range_min_values
     data = (data - min_values) * (ranges / (max_values - min_values)) + range_min_values
-    print data.min(axis=0)
-    print data.max(axis=0)
+    print(data.min(axis=0))
+    print(data.max(axis=0))
     return data
 
 
@@ -116,7 +116,7 @@ def imagenet_data_gen(raw_imagenet_dir, data_dir):
     data_2_path = os.path.join(data_dir, 'data_2.npy')
 
     file_paths = FileViewer.list_files(raw_imagenet_dir, 'JPEG')
-    print 'len(file_paths) =', len(file_paths)
+    print('len(file_paths) =', len(file_paths))
     step = 10000
     N = len(file_paths) / step
 
@@ -151,8 +151,8 @@ def imagenet_data_gen(raw_imagenet_dir, data_dir):
     raw_unresized_data = np.concatenate(raw_unresized_data, axis=0)
     np.save(raw_unresized_data_path, raw_unresized_data)
     raw_unresized_data = np.load(raw_unresized_data_path)
-    print 'raw_unresized_data.shape =', raw_unresized_data.shape
-    print 'raw_unresized_data.dtype =', raw_unresized_data.dtype
+    print('raw_unresized_data.shape =', raw_unresized_data.shape)
+    print('raw_unresized_data.dtype =', raw_unresized_data.dtype)
     raw_resized_data = np.zeros(shape=[raw_unresized_data.shape[0] * raw_unresized_data.shape[1] / 6, 6],dtype=np.int64)
 
     count = 0
@@ -165,22 +165,22 @@ def imagenet_data_gen(raw_imagenet_dir, data_dir):
         raw_resized_data[curr_idx:curr_idx + step, 3:] = raw_unresized_data[:, idx: idx + 3]
         count += 1
         curr_idx += step
-    print 'count =', count
+    print('count =', count)
     np.save(raw_resized_path, raw_resized_data)
 
     raw_resized_data = np.load(raw_resized_path)
-    print 'raw_resized_data.shape =', raw_resized_data.shape
-    print 'raw_resized_data.dtype =', raw_resized_data.dtype
+    print('raw_resized_data.shape =', raw_resized_data.shape)
+    print('raw_resized_data.dtype =', raw_resized_data.dtype)
 
     raw_resized_list = raw_resized_data.tolist()
-    print 'len(raw_resized_list) =', len(raw_resized_list)
+    print('len(raw_resized_list) =', len(raw_resized_list))
 
     data_str_set = set()
     for l in raw_resized_list:
         s = '-'.join([str(i) for i in l])
         data_str_set.add(s)
 
-    print 'data_str_set.size =', len(data_str_set)
+    print('data_str_set.size =', len(data_str_set))
 
 
     raw_data_int = []
@@ -191,12 +191,12 @@ def imagenet_data_gen(raw_imagenet_dir, data_dir):
     np.save(raw_data_int_path, raw_data_int)
 
     raw_data_int = np.load(raw_data_int_path)
-    print 'raw_data_int.max, raw_data_int.min =', raw_data_int.max(), raw_data_int.min()
+    print('raw_data_int.max, raw_data_int.min =', raw_data_int.max(), raw_data_int.min())
     noise = np.random.uniform(0.0, 1.0, size=raw_data_int.shape)
-    print 'noise.max, noise.min =', noise.max(), noise.min()
-    print 'noise.shape =', noise.shape
+    print('noise.max, noise.min =', noise.max(), noise.min())
+    print('noise.shape =', noise.shape)
     raw_data = (noise + raw_data_int) / 257.0  * 1000.0 + 0.001
-    print raw_data.max(), raw_data.min()
+    print(raw_data.max(), raw_data.min())
     idxes = np.arange(0, raw_data.shape[0], dtype=np.int64).tolist()
     random.shuffle(idxes)
     raw_data = raw_data[idxes]
@@ -215,7 +215,7 @@ if __name__ == '__main__':
     workspace = '/home/pfl/workspace/LISA/4d_uniform'
     Config(workspace)
     data_dir = Config().data_dir
-    print '----data_dir =', data_dir
+    print('----data_dir =', data_dir)
     FileViewer.detect_and_create_dir(data_dir)
 
 
@@ -225,7 +225,7 @@ if __name__ == '__main__':
     raw_remove_repated_data = remove_repeated(raw_data)
     data = raw_remove_repated_data[0:N]
     assert(raw_remove_repated_data.shape[0] >= N)
-    print 'data.shape =', data.shape
+    print('data.shape =', data.shape)
 
     idxes = np.arange(0, data.shape[0], dtype=np.int64).tolist()
     random.shuffle(idxes)
@@ -238,7 +238,7 @@ if __name__ == '__main__':
     random.shuffle(idxes)
     data = data[idxes]
     data_3 = data[halfN:]
-    print 'data_3.shape =', data_3.shape
+    print('data_3.shape =', data_3.shape)
 
 
     static_data_path = os.path.join(data_dir, Config().static_data_name)
