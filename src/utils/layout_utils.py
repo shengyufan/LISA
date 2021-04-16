@@ -8,18 +8,19 @@ def get_split_points_and_idxes(x_data, N, max_value=None, type='data_partition')
     :param N: number of parts
     :return:
     """
-
+    # TODO: convert the type of idx to int
     x_split_points = []
     if max_value is None:
         max_value = x_data[-1] + 0.01
     n_every_part = x_data.shape[0] / N
     n_remainder = x_data.shape[0] % N
+    # print(n_every_part, n_remainder)
 
     for i in range(n_remainder):
         if i == N - 1:
             x_split_points.append(max_value)
             continue
-        idx = (i + 1) * (n_every_part + 1)
+        idx = int((i + 1) * (n_every_part + 1))
         split_point = x_data[idx - 1]
         x_split_points.append(split_point)
 
@@ -27,13 +28,12 @@ def get_split_points_and_idxes(x_data, N, max_value=None, type='data_partition')
         if i == N - 1:
             x_split_points.append(max_value)
             continue
-        idx = (i + 1) * n_every_part + n_remainder
+        idx = int((i + 1) * n_every_part + n_remainder)
         split_point = x_data[idx - 1]
         x_split_points.append(split_point)
 
     x_split_idxes = np.searchsorted(x_data, x_split_points, side='left')
     return np.array(x_split_points, dtype=x_data.dtype), x_split_idxes
-
 
 
 def partition(data, dim, start, end, n_parts, split_points_list, split_idxes_list, max_value_each_dim):
@@ -52,7 +52,8 @@ def partition(data, dim, start, end, n_parts, split_points_list, split_idxes_lis
     for i in range(split_idxes.shape[0]):
         next_dim_end = split_idxes[i]
         if dim < data.shape[1] - 2:
-            partition(data, dim + 1, next_dim_start, next_dim_end, n_parts, split_points_list, split_idxes_list, max_value_each_dim)
+            partition(data, dim + 1, next_dim_start, next_dim_end, n_parts, split_points_list, split_idxes_list,
+                      max_value_each_dim)
         next_dim_start = next_dim_end
 
 
@@ -65,6 +66,7 @@ def create_borders(split_points_list):
     dim = 0
     for one_dim_split_points_list in split_points_list:
         n_repeat = (n_cells / n_parts) / len(one_dim_split_points_list)
+        print(n_repeat)
 
         start = 0
         for split_points in one_dim_split_points_list:
@@ -73,7 +75,7 @@ def create_borders(split_points_list):
             lens = split_points - front_split_points
             one_dim_front_split_points_list = []
             one_dim_lens_list = []
-            for _ in range(n_repeat):
+            for _ in range(int(n_repeat)):
                 one_dim_front_split_points_list.append(front_split_points)
                 one_dim_lens_list.append(lens)
 
@@ -87,7 +89,6 @@ def create_borders(split_points_list):
         dim += 1
 
     return borders, all_cell_measures
-
 
 
 def generate_grid_cells(data, n_parts_each_dim, n_models, min_value_each_dim, max_value_each_dim, eta):
@@ -135,7 +136,9 @@ def generate_grid_cells(data, n_parts_each_dim, n_models, min_value_each_dim, ma
                 if tmp > max_measure:
                     max_measure = tmp
                 all_cell_ids[start:end] = cell_id
-                part_mappings = (part_measures * eta) + (part_data[:,-1] / max_value_each_dim * (n_parts_each_dim - 1)) + (cell_id * n_parts_each_dim)
+                part_mappings = (part_measures * eta) + (
+                            part_data[:, -1] / max_value_each_dim * (n_parts_each_dim - 1)) + (
+                                            cell_id * n_parts_each_dim)
                 part_idxes = np.argsort(part_mappings)
                 data[start:end] = part_data[part_idxes]
                 mappings[start:end] = part_mappings[part_idxes]
@@ -176,8 +179,7 @@ def generate_grid_cells(data, n_parts_each_dim, n_models, min_value_each_dim, ma
 
     check_order(mappings)
 
-    return data, mappings, np.array(params,dtype=np.float64), all_cell_measures
-
+    return data, mappings, np.array(params, dtype=np.float64), all_cell_measures
 
 
 def check_order(mappings):
@@ -187,4 +189,3 @@ def check_order(mappings):
             print(i, mappings[i], mappings[i + 1])
             count += 1
     print('**********count =', count)
-

@@ -1,8 +1,6 @@
-import numpy as np
-from core.config import Config
-import os
 import sys
 sys.path.append("../../")
+
 from src.FLAGS_DEFINE import *
 
 
