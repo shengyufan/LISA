@@ -1092,7 +1092,7 @@ class LISA():
         self.cal_shard_numbers_each_col()
 
         shard_params = np.load(shard_params_path)
-        n_cols = shard_params.shape[0] / 2
+        n_cols = int(shard_params.shape[0] / 2)
         self.Alphas = shard_params[0:n_cols]
         self.Betas = shard_params[n_cols:]
 
