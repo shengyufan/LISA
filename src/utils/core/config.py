@@ -23,7 +23,7 @@ class Config(object):
                 directory path to store model generated data.
             """
             data_name = '4d_uniform'
-            self.home_dir = os.path.join(os.path.expanduser("~"), os.path.join('workspace/LISA', data_name))
+            self.home_dir = os.path.join(os.path.abspath(os.path.dirname(os.getcwd())), data_name)
             self.models_dir = os.path.join(self.home_dir, 'models')
             self.data_dir = os.path.join(self.home_dir, 'data')
             # self.logs_dir = os.path.join(self.home_dir, logs_dir)
